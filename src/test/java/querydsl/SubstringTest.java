@@ -10,10 +10,7 @@ import java.util.Properties;
 import javax.annotation.Nullable;
 import javax.inject.Provider;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,14 +67,6 @@ public class SubstringTest {
     public SubstringTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() throws SQLException {
         Properties dbProps = new Properties();
@@ -105,10 +94,6 @@ public class SubstringTest {
                 return c;
             }
         };
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
