@@ -1,0 +1,4 @@
+/target
+/nbproject/
+*~
+/src/main/resources/db.properties
