@@ -1,31 +1,28 @@
 package querydsl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.annotation.Nullable;
-import javax.inject.Provider;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Constant;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Visitor;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spatial.PostGISTemplates;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
+import javax.annotation.Nullable;
+import javax.inject.Provider;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import querydslGenerated.QTesttable;
 
 /**
@@ -57,6 +54,20 @@ public class SubstringTest {
             return v.visit((Constant<N>) mixin, context);
         }
 
+    }
+
+    public static class ConstantBooleanExpression extends BooleanExpression {
+
+        public ConstantBooleanExpression(final Boolean constant) {
+
+            super(ConstantImpl.create(constant));
+        }
+
+        @Override
+        @Nullable
+        public <R, C> R accept(Visitor<R, C> v, C context) {
+            return v.visit((Constant<Boolean>) mixin, context);
+        }
     }
 
     public SQLQueryFactory createQueryFactory() {
@@ -94,6 +105,25 @@ public class SubstringTest {
                 return c;
             }
         };
+    }
+
+    @Test
+    public void testBooleanConstants() {
+        ConstantBooleanExpression t = new ConstantBooleanExpression(Boolean.TRUE);
+        ConstantBooleanExpression f = new ConstantBooleanExpression(Boolean.FALSE);
+
+        QTesttable qt = QTesttable.testtable;
+        SQLQuery<Tuple> query = createQueryFactory()
+                .select(qt.id, qt.description)
+                .from(qt)
+                .where(t.or(f));
+        Tuple first;
+        try {
+            first = query.fetchFirst();
+        } catch (Exception e) {
+            LOGGER.error("Exception.", e);
+            throw e;
+        }
     }
 
     @Test
