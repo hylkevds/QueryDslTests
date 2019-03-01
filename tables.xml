@@ -28,4 +28,17 @@
             <column name="description" value="fourth entry" />
         </insert>
     </changeSet>
+    <changeSet author="scf" id="20190301-test2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <preConditions onFail="MARK_RAN" >
+            <not>
+                <tableExists tableName="testtable2" />
+            </not>
+        </preConditions>
+        <createTable tableName="testtable2">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="testtable2_pkey"/>
+            </column>
+            <column name="colstring" type="text"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

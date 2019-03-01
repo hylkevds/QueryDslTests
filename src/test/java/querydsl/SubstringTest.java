@@ -1,13 +1,11 @@
 package querydsl;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Constant;
 import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Visitor;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.SQLQueryFactory;
 import com.querydsl.sql.SQLTemplates;
 import com.querydsl.sql.spatial.PostGISTemplates;
@@ -23,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import querydslGenerated.QTesttable;
+import querydslGenerated.QTesttable2;
 
 /**
  *
@@ -108,48 +106,12 @@ public class SubstringTest {
     }
 
     @Test
-    public void testBooleanConstants() {
-        ConstantBooleanExpression t = new ConstantBooleanExpression(Boolean.TRUE);
-        ConstantBooleanExpression f = new ConstantBooleanExpression(Boolean.FALSE);
+    public void testInsert() {
+        QTesttable2 qt = QTesttable2.testtable2;
 
-        QTesttable qt = QTesttable.testtable;
-        SQLQuery<Tuple> query = createQueryFactory()
-                .select(qt.id, qt.description)
-                .from(qt)
-                .where(t.or(f));
-        Tuple first;
-        try {
-            first = query.fetchFirst();
-        } catch (Exception e) {
-            LOGGER.error("Exception.", e);
-            throw e;
-        }
-    }
-
-    @Test
-    public void testSubstring() {
-        QTesttable qt = QTesttable.testtable;
-
-        ConstantNumberExpression<Integer> n1 = new ConstantNumberExpression<>(Integer.valueOf(3));
-        ConstantNumberExpression<Integer> n2 = new ConstantNumberExpression<>(Integer.valueOf(6));
-        StringExpression s1 = qt.description;
-        StringExpression substring = s1.substring(n1, n2);
-
-        SQLQuery<Tuple> query = createQueryFactory()
-                .select(qt.id, qt.description)
-                .from(qt)
-                .where(substring.eq("con"));
-        Tuple first;
-        try {
-            first = query.fetchFirst();
-        } catch (Exception e) {
-            LOGGER.error("Exception.", e);
-            throw e;
-        }
-        Long id = first.get(qt.id);
-        String description = first.get(qt.description);
-        LOGGER.info("query: {}", query.getSQL().getSQL());
-        LOGGER.info("first result: {}, {}", id, description);
-        assert (description.substring(2, 3).equalsIgnoreCase("con"));
+        createQueryFactory().insert(qt)
+                .set(qt.colstring, ExpressionUtils.template(String.class, "?::text", "Templated variable"))
+                .set(qt.id, 1L)
+                .execute();
     }
 }
