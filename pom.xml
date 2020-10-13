@@ -15,7 +15,7 @@
         <postgres.version>42.2.5</postgres.version>
         <liquibase.version>3.6.3</liquibase.version>
         <logback.version>1.2.3</logback.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <builddatabase.driver>org.postgresql.Driver</builddatabase.driver>
         <builddatabase.url>jdbc:postgresql://localhost:5432/somedatabase</builddatabase.url>
